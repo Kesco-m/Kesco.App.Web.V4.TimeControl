@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema id="HolidaysInfoDs" targetNamespace="http://tempuri.org/HolidaysInfoDs.xsd" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns="http://tempuri.org/HolidaysInfoDs.xsd" xmlns:mstns="http://tempuri.org/HolidaysInfoDs.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+	<xs:element name="HolidaysInfoDs" msdata:IsDataSet="true">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="Праздники">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Дата" type="xs:dateTime" />
+							<xs:element name="Название" type="xs:string" />
+							<xs:element name="РабочийВыходной" type="xs:unsignedByte" />
+							<xs:element name="Праздник" type="xs:unsignedByte" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+		</xs:complexType>
+		<xs:unique name="HolidaysInfoDsKey1" msdata:PrimaryKey="true">
+			<xs:selector xpath=".//mstns:Праздники" />
+			<xs:field xpath="mstns:Дата" />
+		</xs:unique>
+	</xs:element>
+</xs:schema>

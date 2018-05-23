@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="EmployeePeriodsInfoDs" targetNamespace="http://tempuri.org/EmployeePeriodsInfoDs.xsd" xmlns:mstns="http://tempuri.org/EmployeePeriodsInfoDs.xsd" xmlns="http://tempuri.org/EmployeePeriodsInfoDs.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="EmployeePeriodsInfoDs" msdata:IsDataSet="true" msdata:Locale="en-US" msprop:Generator_DataSetName="EmployeePeriodsInfoDs" msprop:Generator_UserDSName="EmployeePeriodsInfoDs">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Сотрудники" msprop:Generator_TableClassName="СотрудникиDataTable" msprop:Generator_TableVarName="tableСотрудники" msprop:Generator_TablePropName="Сотрудники" msprop:Generator_RowDeletingName="СотрудникиRowDeleting" msprop:Generator_RowChangingName="СотрудникиRowChanging" msprop:Generator_RowEvHandlerName="СотрудникиRowChangeEventHandler" msprop:Generator_RowDeletedName="СотрудникиRowDeleted" msprop:Generator_UserTableName="Сотрудники" msprop:Generator_RowChangedName="СотрудникиRowChanged" msprop:Generator_RowEvArgName="СотрудникиRowChangeEvent" msprop:Generator_RowClassName="СотрудникиRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="КодСотрудника" msprop:Generator_ColumnVarNameInTable="columnКодСотрудника" msprop:Generator_ColumnPropNameInRow="КодСотрудника" msprop:Generator_ColumnPropNameInTable="КодСотрудникаColumn" msprop:Generator_UserColumnName="КодСотрудника" type="xs:int" />
+              <xs:element name="Сотрудник" msprop:Generator_ColumnVarNameInTable="columnСотрудник" msprop:Generator_ColumnPropNameInRow="Сотрудник" msprop:Generator_ColumnPropNameInTable="СотрудникColumn" msprop:Generator_UserColumnName="Сотрудник" type="xs:string" />
+              <xs:element name="Employee" msprop:Generator_ColumnVarNameInTable="columnEmployee" msprop:Generator_ColumnPropNameInRow="Employee" msprop:Generator_ColumnPropNameInTable="EmployeeColumn" msprop:Generator_UserColumnName="Employee" type="xs:string" minOccurs="0" />
+              <xs:element name="КодЛица" msprop:Generator_ColumnVarNameInTable="columnКодЛица" msprop:Generator_ColumnPropNameInRow="КодЛица" msprop:Generator_ColumnPropNameInTable="КодЛицаColumn" msprop:Generator_UserColumnName="КодЛица" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ПроходыСотрудников" msprop:Generator_TableClassName="ПроходыСотрудниковDataTable" msprop:Generator_TableVarName="tableПроходыСотрудников" msprop:Generator_TablePropName="ПроходыСотрудников" msprop:Generator_RowDeletingName="ПроходыСотрудниковRowDeleting" msprop:Generator_RowChangingName="ПроходыСотрудниковRowChanging" msprop:Generator_RowEvHandlerName="ПроходыСотрудниковRowChangeEventHandler" msprop:Generator_RowDeletedName="ПроходыСотрудниковRowDeleted" msprop:Generator_UserTableName="ПроходыСотрудников" msprop:Generator_RowChangedName="ПроходыСотрудниковRowChanged" msprop:Generator_RowEvArgName="ПроходыСотрудниковRowChangeEvent" msprop:Generator_RowClassName="ПроходыСотрудниковRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="КодПроходаСотрудника" msdata:ReadOnly="true" msdata:AutoIncrement="true" msprop:Generator_ColumnVarNameInTable="columnКодПроходаСотрудника" msprop:Generator_ColumnPropNameInRow="КодПроходаСотрудника" msprop:Generator_ColumnPropNameInTable="КодПроходаСотрудникаColumn" msprop:Generator_UserColumnName="КодПроходаСотрудника" type="xs:int" />
+              <xs:element name="КодСотрудника" msprop:Generator_ColumnVarNameInTable="columnКодСотрудника" msprop:Generator_ColumnPropNameInRow="КодСотрудника" msprop:Generator_ColumnPropNameInTable="КодСотрудникаColumn" msprop:Generator_UserColumnName="КодСотрудника" type="xs:int" />
+              <xs:element name="Когда" msprop:Generator_ColumnVarNameInTable="columnКогда" msprop:Generator_ColumnPropNameInRow="Когда" msprop:Generator_ColumnPropNameInTable="КогдаColumn" msprop:Generator_UserColumnName="Когда" type="xs:dateTime" />
+              <xs:element name="КодРасположения" msprop:Generator_ColumnVarNameInTable="columnКодРасположения" msprop:Generator_ColumnPropNameInRow="КодРасположения" msprop:Generator_ColumnPropNameInTable="КодРасположенияColumn" msprop:Generator_UserColumnName="КодРасположения" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ДоступВИнтернет" msprop:Generator_TableClassName="ДоступВИнтернетDataTable" msprop:Generator_TableVarName="tableДоступВИнтернет" msprop:Generator_TablePropName="ДоступВИнтернет" msprop:Generator_RowDeletingName="ДоступВИнтернетRowDeleting" msprop:Generator_RowChangingName="ДоступВИнтернетRowChanging" msprop:Generator_RowEvHandlerName="ДоступВИнтернетRowChangeEventHandler" msprop:Generator_RowDeletedName="ДоступВИнтернетRowDeleted" msprop:Generator_UserTableName="ДоступВИнтернет" msprop:Generator_RowChangedName="ДоступВИнтернетRowChanged" msprop:Generator_RowEvArgName="ДоступВИнтернетRowChangeEvent" msprop:Generator_RowClassName="ДоступВИнтернетRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="КодСотрудника" msprop:Generator_ColumnVarNameInTable="columnКодСотрудника" msprop:Generator_ColumnPropNameInRow="КодСотрудника" msprop:Generator_ColumnPropNameInTable="КодСотрудникаColumn" msprop:Generator_UserColumnName="КодСотрудника" type="xs:int" />
+              <xs:element name="От" msprop:Generator_ColumnVarNameInTable="columnОт" msprop:Generator_ColumnPropNameInRow="От" msprop:Generator_ColumnPropNameInTable="ОтColumn" msprop:Generator_UserColumnName="От" type="xs:dateTime" />
+              <xs:element name="По" msprop:Generator_ColumnVarNameInTable="columnПо" msprop:Generator_ColumnPropNameInRow="По" msprop:Generator_ColumnPropNameInTable="ПоColumn" msprop:Generator_UserColumnName="По" type="xs:dateTime" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="EmployeePeriodsInfoDsKey1">
+      <xs:selector xpath=".//mstns:Сотрудники" />
+      <xs:field xpath="mstns:КодСотрудника" />
+    </xs:unique>
+    <xs:unique name="EmployeePeriodsInfoDsKey2">
+      <xs:selector xpath=".//mstns:ПроходыСотрудников" />
+      <xs:field xpath="mstns:КодПроходаСотрудника" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

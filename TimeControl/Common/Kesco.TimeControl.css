@@ -1,0 +1,47 @@
+.subHeaderCaptionDiv
+{
+	COLOR: #000088;
+	TOP: 25px;
+	LEFT: 60px;	
+	FONT-FAMILY: Arial Cyr;
+	FONT-WEIGHT: bold;
+	FONT-SIZE: 15pt;
+	POSITION: absolute;
+	padding-left: 2px;	
+}
+
+.headerCaptionDiv
+{	
+	COLOR: white;
+	TOP: 5px;
+	LEFT: 50px;
+	FONT-FAMILY: Verdana;
+	FONT-WEIGHT: bold;
+	FONT-SIZE: 8pt;
+	POSITION: absolute;	
+}
+
+.PageHeader
+{
+	text-align: center;
+	BACKGROUND-COLOR: #FFB300;
+	FONT-SIZE:12px;
+}
+
+.Grid8Grayed {border: #dcdcdc 1px solid; border-collapse:collapse;}
+.Grid8Grayed TD {border: #dcdcdc 1px solid; color:#cccccc; }
+.Grid8Grayed A  {color:#cccccc; }
+.Grid8Grayed P  {color:#cccccc; }
+.Grid8Grayed DIV  {color:#cccccc; }
+.Grid8Grayed FONT  {color:#cccccc; }
+.Grid8Grayed TH { border:#dcdcdc 1px solid; }
+.Grid8Grayed IMG{ display:none;}
+
+.GridHeaderGrayed
+{
+	text-align: center;
+	BACKGROUND-COLOR: #dcdcdc;
+	COLOR: white;
+	VERTICAL-ALIGN: middle;
+	FONT-SIZE:8pt;
+}
