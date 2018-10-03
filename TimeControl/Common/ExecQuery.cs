@@ -325,11 +325,11 @@ ORDER BY t2.Кличка", subdivision);
 
             if (!emplName.Equals(String.Empty) && clausePerson != 2)
             {
-                additionalRestrictions = String.Format(" AND T0.КодСотрудника {1} IN ({0})", emplName, clausePerson == 1 ? "NOT" : "");
+                additionalRestrictions = String.Format(" AND {2} T0.КодСотрудника {1} IN ({0})", emplName, clausePerson == 1 ? "NOT" : "", string.IsNullOrEmpty(additionalRestrictions) ? "(" : " ");
             }
             if (clausePerson == 2)
             {
-                additionalRestrictions = " AND T0.КодСотрудника IS NULL";
+                additionalRestrictions = String.Format(" AND {0} T0.КодСотрудника IS NULL", string.IsNullOrEmpty(additionalRestrictions) ? "(" : " ");
             }
 
             if (!postInfo.Equals(String.Empty) || !divisionInfo.Equals(String.Empty) || !companyInfo.Equals(String.Empty) || clausePosition == 2 || clauseSubdivision == 2 || clauseCompany == 2
@@ -340,40 +340,40 @@ ORDER BY t2.Кличка", subdivision);
 
             if (!postInfo.Equals(String.Empty) && clausePosition != 2 && clausePosition != 3)
             {
-                additionalRestrictions += String.Format(" AND T1.Должность {1} IN ({0})", postInfo, clausePosition == 1 ? "NOT" : "");
+                additionalRestrictions += String.Format(" AND {2} T1.Должность {1} IN ({0})", postInfo, clausePosition == 1 ? "NOT" : "", string.IsNullOrEmpty(additionalRestrictions) ? "(" : " ");
             }
             if (clausePosition == 2)
             {
-                additionalRestrictions += " AND (T1.Должность IS NULL OR T1.Должность = '')";
+                additionalRestrictions += String.Format(" AND {0} (T1.Должность IS NULL OR T1.Должность = '')", string.IsNullOrEmpty(additionalRestrictions) ? "(" : " ");
             }
             if (clausePosition == 3)
             {
-                additionalRestrictions += " AND (T1.Должность IS NOT NULL AND T1.Должность <> '')";
+                additionalRestrictions += String.Format(" AND {0} (T1.Должность IS NOT NULL AND T1.Должность <> '')", string.IsNullOrEmpty(additionalRestrictions) ? "(" : " ");
             }
 
             if (!divisionInfo.Equals(String.Empty) && clauseSubdivision != 2 && clauseSubdivision != 3)
             {
-                additionalRestrictions += String.Format(" AND EXISTS (SELECT P0.КодДолжности FROM vwДолжности AS P0 WHERE (T1.L >= P0.L AND T1.R <= P0.R) AND P0.Подразделение {1} IN ({0}))",
-                    divisionInfo, clauseSubdivision == 1 ? "NOT" : "");
+                additionalRestrictions += String.Format(" AND {2} EXISTS (SELECT P0.КодДолжности FROM vwДолжности AS P0 WHERE (T1.L >= P0.L AND T1.R <= P0.R) AND P0.Подразделение {1} IN ({0}))",
+                    divisionInfo, clauseSubdivision == 1 ? "NOT" : "", string.IsNullOrEmpty(additionalRestrictions) ? "(" : " ");
             }
             if (clauseSubdivision == 2)
             {
-                additionalRestrictions += " AND EXISTS (SELECT P0.КодДолжности FROM vwДолжности AS P0 WHERE (T1.L >= P0.L AND T1.R <= P0.R) AND (P0.Подразделение IS NULL OR P0.Подразделение = ''))";
+                additionalRestrictions += String.Format(" AND {0} EXISTS (SELECT P0.КодДолжности FROM vwДолжности AS P0 WHERE (T1.L >= P0.L AND T1.R <= P0.R) AND (P0.Подразделение IS NULL OR P0.Подразделение = ''))", string.IsNullOrEmpty(additionalRestrictions) ? "(" : " ");
             }
             if (clauseSubdivision == 3)
             {
-                additionalRestrictions += " AND EXISTS (SELECT P0.КодДолжности FROM vwДолжности AS P0 WHERE (T1.L >= P0.L AND T1.R <= P0.R) AND (P0.Подразделение IS NOT NULL AND P0.Подразделение <> ''))";
+                additionalRestrictions += String.Format(" AND {0} EXISTS (SELECT P0.КодДолжности FROM vwДолжности AS P0 WHERE (T1.L >= P0.L AND T1.R <= P0.R) AND (P0.Подразделение IS NOT NULL AND P0.Подразделение <> ''))", string.IsNullOrEmpty(additionalRestrictions) ? "(" : " ");
             }
 
             if (!companyInfo.Equals(String.Empty) && clauseCompany != 2)
             {
                 //additionalRestrictions += String.Format(" AND (T1.КодЛица {1} IN ({0}) {2} T0.КодЛицаЗаказчика {1} IN ({0}))", companyInfo, clauseCompany == 1 ? "NOT" : "", clauseCompany == 1 ? "and" : "or");
-                additionalRestrictions += String.Format(" AND T0.КодЛицаЗаказчика {1} IN ({0})", companyInfo, clauseCompany == 1 ? "NOT" : "");
+                additionalRestrictions += String.Format(" AND {2} T0.КодЛицаЗаказчика {1} IN ({0})", companyInfo, clauseCompany == 1 ? "NOT" : "", string.IsNullOrEmpty(additionalRestrictions) ? "(" : " ");
             }
             if (clauseCompany == 2)
             {
                 //additionalRestrictions += " AND (T1.КодЛица IS NULL OR T0.КодЛицаЗаказчика IS NULL)";
-                additionalRestrictions += " AND T0.КодЛицаЗаказчика IS NULL";
+                additionalRestrictions += String.Format(" AND {0} T0.КодЛицаЗаказчика IS NULL", string.IsNullOrEmpty(additionalRestrictions) ? "(" : " ");
             }
 
             string dateRestriction = string.Format(" Dateadd(MINUTE,{2},TE0.[Когда]) > CONVERT(datetime, '{0}', 120) AND Dateadd(MINUTE,{2},TE0.[Когда]) < CONVERT(datetime, '{1}', 120)", 
@@ -464,10 +464,17 @@ WHERE	Должности.КодСотрудника IS NOT NULL AND
 		WHERE	КодСотрудника IN ({0})
 		
 	))", emplName, startpostFilter);
+
+            string endRestrictions = "";
+            if (!additionalRestrictions.Equals(String.Empty))
+            {
+                endRestrictions = " ) ";
+            }
+
             string personSearch = String.Format(@"SELECT DISTINCT T0.КодСотрудника, CONVERT(varchar, COALESCE(T0.КодЛица, -1)) КодЛица, T0.Сотрудник, T0.Employee FROM Сотрудники T0
-{0}{1}{2}{3}){4}){5}{9}{6}{7}{8}{10}
+{0}{1}{2}{3}){4}){5}{9}{6}{7}{8}{10}{11}
 ORDER BY T0.Сотрудник", additionalInnerJoin, personWhere, timeExitLocation, timeExitRestriction, personActive, additionalRestrictions,
-                      divisionInfoSubEmpl, postInfoSubEmpl, personSubEmpl, startAddFilter, endAddFilter);
+                      divisionInfoSubEmpl, postInfoSubEmpl, personSubEmpl, startAddFilter, endAddFilter, endRestrictions);
 
 //            string entranceQuery = @"
 //SELECT TE0.КодПроходаСотрудника, TE0.КодСотрудника, Dateadd(MINUTE," + tz + @",TE0.[Когда]) Когда, TE0.КодРасположения 
@@ -478,7 +485,7 @@ ORDER BY T0.Сотрудник", additionalInnerJoin, personWhere, timeExitLocat
 SELECT TE0.КодПроходаСотрудника, TE0.КодСотрудника, Dateadd(MINUTE," + tz + @",TE0.[Когда]) Когда, TE0.КодРасположения 
 FROM vwПроходыСотрудников AS TE0 (nolock) WHERE КодСотрудника IN ("
                 + string.Format(queryEmplTempl, "", additionalInnerJoin, additionalRestrictionsCr, additionalRestrictions, timeExitRestriction, dateRestriction, timeExitLocation) +
-                String.Format("{0}{1}{2}{3}{4})", startAddFilter, divisionInfoSubEmpl, postInfoSubEmpl, personSubEmpl, endAddFilter);
+                String.Format("{0}{1}{2}{3}{4}{5})", startAddFilter, divisionInfoSubEmpl, postInfoSubEmpl, personSubEmpl, endAddFilter, endRestrictions);
 
             //var args = new Dictionary<string, object>();
             //args.Add("@ОтображатьВсех", active ? 0 : 1);
