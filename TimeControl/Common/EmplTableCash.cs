@@ -63,7 +63,16 @@ namespace Kesco.App.Web.TimeControl.Common
             _currentPage = 1;
             _rowsPerPage = 35;
             _subEmpl = false;
-            _sourceTable.Rows.Clear();
+            //_sourceTable.Rows.Clear();
+            
+            try
+            {
+                _sourceTable.Rows.Clear();
+            }
+            catch (Exception)
+            {
+            }
+            
         }
 
         /// <summary>

@@ -680,6 +680,9 @@ namespace Kesco.App.Web.TimeControl.Forms
 
         private void RefreshListInternal()
         {
+            SaveParams("");
+           
+
             if (String.IsNullOrEmpty(Tz))
             {
                 JS.Write("ShowWaitLayer('Refresh');");
