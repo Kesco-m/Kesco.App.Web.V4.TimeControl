@@ -1,60 +1,59 @@
-*{
+* { }
+
+BODY {
+    background-color: #efefef;
+    font-family: Verdana;
+    font-size: 8pt;
+    overflow: auto;
 }
-BODY
-{
-	background-color:#efefef;
-	overflow:auto;
-	font-size: 8pt; 
-	font-family: Verdana;
+
+.BlackA A {
+    color: blue;
+    text-decoration: none;
 }
-.BlackA A		
-{
-	color:blue;
-	text-decoration: none;
+
+.BlackA A:hover {
+    color: blue;
+    text-decoration: none;
 }
-.BlackA A:hover
-{
-	color:blue;
-	text-decoration: none;
+
+.BlackA A:active {
+    background-color: Gainsboro;
+    color: blue;
+    text-decoration: none;
 }
-.BlackA A:active
-{
-	color:blue;
-	background-color:Gainsboro;
-	text-decoration: none;
+
+H3 {
+    font-size: 10pt;
+    font-weight: bold;
+    margin: 0px;
 }
-H3
-{
-	font-weight: bold;
-	font-size: 10pt; 
-	margin: 0px;
+
+TABLE {
+    background-color: #efefef;
+    font-family: Verdana;
+    font-size: 8pt;
+    overflow: auto;
 }
-TABLE
-{
-	background-color:#efefef;
-	overflow:auto;
-	font-size: 8pt; 
-	font-family: Verdana;
+
+.BlackA A {
+    color: blue;
+    text-decoration: none;
 }
-.BlackA A		
-{
-	color:blue;
-	text-decoration: none;
+
+.BlackA A:hover {
+    color: blue;
+    text-decoration: none;
 }
-.BlackA A:hover
-{
-	color:blue;
-	text-decoration: none;
+
+.BlackA A:active {
+    background-color: Gainsboro;
+    color: blue;
+    text-decoration: none;
 }
-.BlackA A:active
-{
-	color:blue;
-	background-color:Gainsboro;
-	text-decoration: none;
-}
-H3
-{
-	font-weight: bold;
-	font-size: 10pt; 
-	margin: 0px;
+
+H3 {
+    font-size: 10pt;
+    font-weight: bold;
+    margin: 0px;
 }

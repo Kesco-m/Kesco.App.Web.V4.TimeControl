@@ -7,44 +7,63 @@ using Kesco.App.Web.TimeControl.DataSets;
 using Kesco.App.Web.TimeControl.Entities;
 using Kesco.Lib.BaseExtention;
 using Kesco.Lib.DALC;
+using Kesco.Lib.Localization;
 
 namespace Kesco.App.Web.TimeControl.Common
 {
     /// <summary>
-    /// Класс для работы с периодом
+    ///     Класс для работы с периодом
     /// </summary>
     [Serializable]
     public class DaysTableCash
     {
-        /// <summary>
-        /// Признак наличия нарушений режима
-        /// </summary>
-        public bool IsError;
-        /// <summary>
-        /// Признак расчета нарушений режима в пользу сотрудника
-        /// </summary>
-        public bool PrimaryEmployeeCalc;
-        private DateTime _startDate;
-        private DateTime _endDate;
         //private bool _needCheckIndex;
         //private Int32 _maxIndex;
-        private Int32 _emplId;
-        private DataTable _sourceTable;
-        private String _empNameRus;
-        private String _empNameLat;
+        private int _emplId;
+        private string _empNameLat;
+        private string _empNameRus;
+        private DateTime _endDate;
         private HolidaysInfoDs _holidays;
-        /// <summary>
-        /// Локализация
-        /// </summary>
-        private ResourceManager _resx = Lib.Localization.Resources.Resx;
 
         /// <summary>
-        /// Конструктор класса
+        ///     Локализация
         /// </summary>
-        public DaysTableCash() { }
+        private readonly ResourceManager _resx = Resources.Resx;
+
+        private DataTable _sourceTable;
+        private DateTime _startDate;
 
         /// <summary>
-        /// Очистка кеша
+        ///     Признак наличия нарушений режима
+        /// </summary>
+        public bool IsError;
+
+        /// <summary>
+        ///     Признак расчета нарушений режима в пользу сотрудника
+        /// </summary>
+        public bool PrimaryEmployeeCalc;
+
+        /// <summary>
+        ///     Конструктор класса
+        /// </summary>
+        public DaysTableCash()
+        {
+        }
+
+        /// <summary>
+        ///     Конструктор класса с параметрами
+        /// </summary>
+        /// <param name="sourceTable">Источник данных</param>
+        /// <param name="primaryEmployeeCalc">Признак расчета нарушений режима в пользу сотрудника</param>
+        public DaysTableCash(DataTable sourceTable, bool primaryEmployeeCalc)
+        {
+            _sourceTable = sourceTable;
+            PrimaryEmployeeCalc = primaryEmployeeCalc;
+            ClearCash();
+        }
+
+        /// <summary>
+        ///     Очистка кеша
         /// </summary>
         public void ClearCash()
         {
@@ -57,36 +76,22 @@ namespace Kesco.App.Web.TimeControl.Common
         }
 
         /// <summary>
-        /// Конструктор класса с параметрами
-        /// </summary>
-        /// <param name="sourceTable">Источник данных</param>
-        /// <param name="primaryEmployeeCalc">Признак расчета нарушений режима в пользу сотрудника</param>
-        public DaysTableCash(DataTable sourceTable, bool primaryEmployeeCalc)
-        {
-            _sourceTable = sourceTable;
-            PrimaryEmployeeCalc = primaryEmployeeCalc;
-            ClearCash();
-        }
-
-        /// <summary>
-        /// Получение строки с празником
+        ///     Получение строки с празником
         /// </summary>
         /// <param name="sourceDay">Строка с празником</param>
         /// <returns></returns>
         public HolidaysInfoDs.ПраздникиRow GetHolidayInfo(DateTime sourceDay)
         {
             HolidaysInfoDs.ПраздникиRow result = null;
-            var rows = (HolidaysInfoDs.ПраздникиRow[])_holidays.Праздники.Select("Дата = #" + sourceDay.ToString("yyyy-MM-dd") + "#");
+            var rows = (HolidaysInfoDs.ПраздникиRow[]) _holidays.Праздники.Select(
+                "Дата = #" + sourceDay.ToString("yyyy-MM-dd") + "#");
 
-            if (rows.Length > 0)
-            {
-                result = rows[0];
-            }
+            if (rows.Length > 0) result = rows[0];
             return result;
         }
 
         /// <summary>
-        /// Получение списка праздников за выбранный период
+        ///     Получение списка праздников за выбранный период
         /// </summary>
         /// <param name="startDate">Дата начала</param>
         /// <param name="endDate">Дата конца</param>
@@ -96,20 +101,22 @@ namespace Kesco.App.Web.TimeControl.Common
             var nStartDate = startDate.ToSqlDateNormalized();
             var nEndDate = endDate.ToSqlDateNormalized();
 
-            string sStartDate = nStartDate.ToString("yyyy-MM-dd HH:mm:ss");
-            string sEndDate = nEndDate.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss");
+            var sStartDate = nStartDate.ToString("yyyy-MM-dd HH:mm:ss");
+            var sEndDate = nEndDate.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss");
 
             var result = new HolidaysInfoDs();
 
-            string sql = String.Format("SELECT Дата, Название, РабочийВыходной, Праздник FROM Праздники WHERE (Дата >= convert(datetime, '{0}', 120)) AND (Дата <= convert(datetime, '{1}', 120)) AND (КодТерритории = 188)", sStartDate, sEndDate);
-            DataTable dt = DBManager.GetData(sql, Global.ConnectionString);
+            var sql = string.Format(
+                "SELECT Дата, Название, РабочийВыходной, Праздник FROM Праздники WHERE (Дата >= convert(datetime, '{0}', 120)) AND (Дата <= convert(datetime, '{1}', 120)) AND (КодТерритории = 188)",
+                sStartDate, sEndDate);
+            var dt = DBManager.GetData(sql, Global.ConnectionString);
             result.Праздники.Clear();
             result.Праздники.Merge(dt);
             return result;
         }
 
         /// <summary>
-        /// Получение списка дней за выбранный период
+        ///     Получение списка дней за выбранный период
         /// </summary>
         /// <param name="startPeriodParam">Дата начала</param>
         /// <param name="endPeriodParam">Дата конца</param>
@@ -118,13 +125,29 @@ namespace Kesco.App.Web.TimeControl.Common
         public void CompleteDaysTable(DateTime? startPeriodParam, DateTime? endPeriodParam, string semplId, string stz)
         {
             int tz, emplId;
-            try { tz = Convert.ToInt32(stz); } catch { tz = 0; }
-            try { emplId = Convert.ToInt32(semplId); } catch { emplId = 0; }
+            try
+            {
+                tz = Convert.ToInt32(stz);
+            }
+            catch
+            {
+                tz = 0;
+            }
+
+            try
+            {
+                emplId = Convert.ToInt32(semplId);
+            }
+            catch
+            {
+                emplId = 0;
+            }
+
             //bool hasNewIds = _needCheckIndex && (EmployeeTimePeriodsInfo.GetMaxId(_startDate, _endDate, _emplId, -tz) != _maxIndex);
             //bool sourceChanged = (_startDate == DateTime.MinValue) || (_endDate == DateTime.MinValue) || hasNewIds;
             //bool sourceChanged = true;
-            DateTime startPeriod = startPeriodParam ?? DateTime.MinValue;
-            DateTime endPeriod = endPeriodParam ?? DateTime.MinValue;
+            var startPeriod = startPeriodParam ?? DateTime.MinValue;
+            var endPeriod = endPeriodParam ?? DateTime.MinValue;
 
             //if (emplId != _emplId || sourceChanged)
             //{
@@ -135,28 +158,21 @@ namespace Kesco.App.Web.TimeControl.Common
             {
                 IsError = false;
                 _holidays = CompleteHolidaysInfoDs(startPeriod, endPeriod);
-                DateTime minDate = DateTime.MaxValue;
-                DateTime maxDate = DateTime.MinValue;
+                var minDate = DateTime.MaxValue;
+                var maxDate = DateTime.MinValue;
 
-                DataTable temp = _sourceTable.Clone();
+                var temp = _sourceTable.Clone();
 
                 foreach (DataRow row in _sourceTable.Rows)
-                {
-                    if ((((DateTime)row["DAY_VALUE"]).Date <= endPeriod.Date && ((DateTime)row["DAY_VALUE"]).Date >= startPeriod.Date))
+                    if (((DateTime) row["DAY_VALUE"]).Date <= endPeriod.Date &&
+                        ((DateTime) row["DAY_VALUE"]).Date >= startPeriod.Date)
                     {
-                        if (minDate > ((DateTime)row["DAY_VALUE"]).Date)
-                        {
-                            minDate = ((DateTime)row["DAY_VALUE"]).Date;
-                        }
+                        if (minDate > ((DateTime) row["DAY_VALUE"]).Date) minDate = ((DateTime) row["DAY_VALUE"]).Date;
 
-                        if (maxDate < ((DateTime)row["DAY_VALUE"]).Date)
-                        {
-                            maxDate = ((DateTime)row["DAY_VALUE"]).Date;
-                        }
+                        if (maxDate < ((DateTime) row["DAY_VALUE"]).Date) maxDate = ((DateTime) row["DAY_VALUE"]).Date;
 
                         temp.ImportRow(row);
                     }
-                }
 
                 _sourceTable.Rows.Clear();
                 _sourceTable = temp.Copy();
@@ -167,26 +183,22 @@ namespace Kesco.App.Web.TimeControl.Common
                 {
                     _startDate = DateTime.MinValue;
                     _endDate = DateTime.MinValue;
-                    periodsDs = new ExecQuery().CompleteEmployeePeriodsInfoDs(emplId, startPeriod.Date, endPeriod.Date, -tz);
+                    periodsDs = new ExecQuery().CompleteEmployeePeriodsInfoDs(emplId, startPeriod.Date, endPeriod.Date,
+                        -tz);
                 }
                 else
                 {
                     if (minDate.Date != startPeriod.Date && maxDate.Date != endPeriod.Date)
-                    {
-                        periodsDs = new ExecQuery().CompleteEmployeePeriodsInfoDs(emplId, startPeriod.Date, minDate.Date, maxDate.Date, endPeriod.Date.AddDays(1));
-                    }
+                        periodsDs = new ExecQuery().CompleteEmployeePeriodsInfoDs(emplId, startPeriod.Date,
+                            minDate.Date, maxDate.Date, endPeriod.Date.AddDays(1));
                     else if (minDate.Date != startPeriod.Date)
-                    {
-                        periodsDs = new ExecQuery().CompleteEmployeePeriodsInfoDs(emplId, startPeriod.Date, minDate.Date, -tz);
-                    }
+                        periodsDs = new ExecQuery().CompleteEmployeePeriodsInfoDs(emplId, startPeriod.Date,
+                            minDate.Date, -tz);
                     else if (maxDate.Date != endPeriod.Date)
-                    {
-                        periodsDs = new ExecQuery().CompleteEmployeePeriodsInfoDs(emplId, maxDate.Date, endPeriod.Date, -tz);
-                    }
+                        periodsDs = new ExecQuery().CompleteEmployeePeriodsInfoDs(emplId, maxDate.Date, endPeriod.Date,
+                            -tz);
                     else
-                    {
                         periodsDs = new EmployeePeriodsInfoDs();
-                    }
 
                     _startDate = minDate;
                     _endDate = maxDate;
@@ -194,133 +206,109 @@ namespace Kesco.App.Web.TimeControl.Common
 
                 if (periodsDs.Сотрудники.Rows.Count > 0)
                 {
-                    _empNameRus = ((EmployeePeriodsInfoDs.СотрудникиRow)periodsDs.Сотрудники.Rows[0]).Сотрудник;
-                    _empNameLat = ((EmployeePeriodsInfoDs.СотрудникиRow)periodsDs.Сотрудники.Rows[0]).Employee;
+                    _empNameRus = ((EmployeePeriodsInfoDs.СотрудникиRow) periodsDs.Сотрудники.Rows[0]).Сотрудник;
+                    _empNameLat = ((EmployeePeriodsInfoDs.СотрудникиRow) periodsDs.Сотрудники.Rows[0]).Employee;
                 }
 
                 var dayIntervals = new EmployeeTimeInervals();
 
-                for (DateTime curentDay = startPeriod; curentDay <= endPeriod; curentDay = curentDay.AddDays(1))
-                {
+                for (var curentDay = startPeriod; curentDay <= endPeriod; curentDay = curentDay.AddDays(1))
                     dayIntervals.Add(new TimeInterval(curentDay.Date, curentDay.Date.AddDays(1), -1));
-                }
-                bool isEnterPrevDayByDay = false;
+                var isEnterPrevDayByDay = false;
                 foreach (TimeInterval curInterval in dayIntervals)
                 {
-                    if (curInterval.StartTime.Date >= _startDate.Date && curInterval.StartTime.Date <= _endDate.Date)
-                    {
-                        continue;
-                    }
+                    if (curInterval.StartTime.Date >= _startDate.Date &&
+                        curInterval.StartTime.Date <= _endDate.Date) continue;
 
-                    var periodsInfo = new EmployeeTimePeriodsInfo(curInterval.StartTime, curInterval.EndTime, emplId, PrimaryEmployeeCalc, periodsDs.ПроходыСотрудников, true, isEnterPrevDayByDay);
+                    var periodsInfo = new EmployeeTimePeriodsInfo(curInterval.StartTime, curInterval.EndTime, emplId,
+                        PrimaryEmployeeCalc, periodsDs.ПроходыСотрудников, true, isEnterPrevDayByDay);
                     isEnterPrevDayByDay = periodsInfo.IsEnterPrevDayByDay;
-                    var internetAccessInfo = new EmployeeInternetAccessInfo(curInterval.StartTime, curInterval.EndTime, emplId);
+                    var internetAccessInfo =
+                        new EmployeeInternetAccessInfo(curInterval.StartTime, curInterval.EndTime, emplId);
 
                     object linkCell = null;
 
-                    if (periodsInfo.EntranceTime != null || periodsInfo.ExitTime != null || (periodsInfo.ExitTimePrevDay != null && periodsInfo.EnterTimeNextDay != null))
-                    {
-                        linkCell = String.Format("<A href=\"#\" onclick=\"cmd('cmd', 'openDetails', 'id', '{0}', 'from', '{1}', 'to', '{2}');\"><IMG src=\"{3}detail.GIF\" border=\"0\" title=\"{4}\"></A>",
-                            emplId, curInterval.StartTime, curInterval.EndTime, Global.Styles, _resx.GetString("hPageSubTitleDetails2"));
-                    }
+                    if (periodsInfo.EntranceTime != null || periodsInfo.ExitTime != null ||
+                        periodsInfo.ExitTimePrevDay != null && periodsInfo.EnterTimeNextDay != null)
+                        linkCell = string.Format(
+                            "<A href=\"#\" onclick=\"cmd('cmd', 'openDetails', 'id', '{0}', 'from', '{1}', 'to', '{2}');\"><IMG src=\"{3}detail.GIF\" border=\"0\" title=\"{4}\"></A>",
+                            emplId, curInterval.StartTime, curInterval.EndTime, Global.Styles,
+                            _resx.GetString("hPageSubTitleDetails2"));
 
-                    TimeSpan totalWorkTime = periodsInfo.TotalWorkTime;
-                    TimeSpan totalAbsentTime = periodsInfo.TotalAbsentTime;
+                    var totalWorkTime = periodsInfo.TotalWorkTime;
+                    var totalAbsentTime = periodsInfo.TotalAbsentTime;
 
-                    string strEntranceTime = "";
-                    string strExitTime = "";
-                    string isEnterAfterExit = "";
-                    string isEnterAfterExit2 = "";
+                    var strEntranceTime = "";
+                    var strExitTime = "";
+                    var isEnterAfterExit = "";
+                    var isEnterAfterExit2 = "";
 
                     if (periodsInfo.ExitTime != null)
-                    {
-                        //strExitTime = String.Format("{0}-{1}-{2} {3}:{4}:{5}", ((DateTime)periodsInfo.ExitTime).Year.ToString(CultureInfo.InvariantCulture), 
-                        //    ((DateTime)periodsInfo.ExitTime).Month.ToString(CultureInfo.InvariantCulture), ((DateTime)periodsInfo.ExitTime).Day.ToString(CultureInfo.InvariantCulture), 
-                        //    ((DateTime)periodsInfo.ExitTime).Hour.ToString(CultureInfo.InvariantCulture), ((DateTime)periodsInfo.ExitTime).Minute.ToString(CultureInfo.InvariantCulture), 
-                        //    ((DateTime)periodsInfo.ExitTime).Second.ToString(CultureInfo.InvariantCulture));
                         strExitTime = ((DateTime) periodsInfo.ExitTime).ToString("HH:mm:ss");
-                    }
 
                     if (periodsInfo.EntranceTime != null)
-                    {
-                        //strEntranceTime = String.Format("{0}-{1}-{2} {3}:{4}:{5}", ((DateTime)periodsInfo.EntranceTime).Year.ToString(CultureInfo.InvariantCulture), 
-                        //    ((DateTime)periodsInfo.EntranceTime).Month.ToString(CultureInfo.InvariantCulture), ((DateTime)periodsInfo.EntranceTime).Day.ToString(CultureInfo.InvariantCulture), 
-                        //    ((DateTime)periodsInfo.EntranceTime).Hour.ToString(CultureInfo.InvariantCulture), ((DateTime)periodsInfo.EntranceTime).Minute.ToString(CultureInfo.InvariantCulture), 
-                        //    ((DateTime)periodsInfo.EntranceTime).Second.ToString(CultureInfo.InvariantCulture));
-                        strEntranceTime = ((DateTime)periodsInfo.EntranceTime).ToString("HH:mm:ss");
-                    }
+                        strEntranceTime = ((DateTime) periodsInfo.EntranceTime).ToString("HH:mm:ss");
 
-                    if (periodsInfo.ExitTime != null && periodsInfo.EntranceTime != null && (DateTime)periodsInfo.EntranceTime > (DateTime)periodsInfo.ExitTime)
+                    if (periodsInfo.ExitTime != null && periodsInfo.EntranceTime != null &&
+                        (DateTime) periodsInfo.EntranceTime > (DateTime) periodsInfo.ExitTime)
                     {
                         isEnterAfterExit = "<div>00:00:00</div><hr />";
                         isEnterAfterExit2 = "<hr /><div>24:00:00</div>";
                     }
 
-                    if (periodsInfo.ExitTime == null && periodsInfo.EntranceTime == null && periodsInfo.ExitTimePrevDay != null && periodsInfo.EnterTimeNextDay != null)
+                    if (periodsInfo.ExitTime == null && periodsInfo.EntranceTime == null &&
+                        periodsInfo.ExitTimePrevDay != null && periodsInfo.EnterTimeNextDay != null)
                     {
                         //strExitTime = String.Format("{0}-{1}-{2} {3}:{4}:{5}", ((DateTime)periodsInfo.ExitTimePrevDay).Year.ToString(CultureInfo.InvariantCulture), 
                         //    ((DateTime)periodsInfo.ExitTimePrevDay).Month.ToString(CultureInfo.InvariantCulture), ((DateTime)periodsInfo.ExitTimePrevDay).Day.ToString(CultureInfo.InvariantCulture), 
                         //    ((DateTime)periodsInfo.ExitTimePrevDay).Hour.ToString(CultureInfo.InvariantCulture), ((DateTime)periodsInfo.ExitTimePrevDay).Minute.ToString(CultureInfo.InvariantCulture), 
                         //    ((DateTime)periodsInfo.ExitTimePrevDay).Second.ToString(CultureInfo.InvariantCulture));
-                        strExitTime = ((DateTime)periodsInfo.ExitTimePrevDay).ToString("HH:mm:ss");
+                        strExitTime = ((DateTime) periodsInfo.ExitTimePrevDay).ToString("HH:mm:ss");
                         //strEntranceTime = String.Format("{0}-{1}-{2} {3}:{4}:{5}", ((DateTime)periodsInfo.EnterTimeNextDay).Year.ToString(CultureInfo.InvariantCulture), 
                         //    ((DateTime)periodsInfo.EnterTimeNextDay).Month.ToString(CultureInfo.InvariantCulture), ((DateTime)periodsInfo.EnterTimeNextDay).Day.ToString(CultureInfo.InvariantCulture), 
                         //    ((DateTime)periodsInfo.EnterTimeNextDay).Hour.ToString(CultureInfo.InvariantCulture), ((DateTime)periodsInfo.EnterTimeNextDay).Minute.ToString(CultureInfo.InvariantCulture), 
                         //    ((DateTime)periodsInfo.EnterTimeNextDay).Second.ToString(CultureInfo.InvariantCulture));
-                        strEntranceTime = ((DateTime)periodsInfo.EnterTimeNextDay).ToString("HH:mm:ss");
+                        strEntranceTime = ((DateTime) periodsInfo.EnterTimeNextDay).ToString("HH:mm:ss");
                         isEnterAfterExit = "<div>00:00:00</div><hr />";
                         isEnterAfterExit2 = "<hr /><div>24:00:00</div>";
                     }
 
-                    if (periodsInfo.ExitTime == null && periodsInfo.EntranceTime != null && periodsInfo.EnterTimeNextDay != null)
-                    {
-                        //strExitTime = String.Format("{0}-{1}-{2} 0:0:0", ((DateTime)periodsInfo.EntranceTime).Year.ToString(CultureInfo.InvariantCulture),
-                        //    ((DateTime)periodsInfo.EntranceTime).Month.ToString(CultureInfo.InvariantCulture), ((DateTime)periodsInfo.EntranceTime).Day.ToString(CultureInfo.InvariantCulture));
-                        strExitTime = "24:00:00";
-                    }
-                    if (periodsInfo.ExitTime != null && periodsInfo.EntranceTime == null && periodsInfo.ExitTimePrevDay != null)
-                    {
-                        //strEntranceTime = String.Format("{0}-{1}-{2} 0:0:0", ((DateTime)periodsInfo.ExitTime).Year.ToString(CultureInfo.InvariantCulture),
-                        //    ((DateTime)periodsInfo.ExitTime).Month.ToString(CultureInfo.InvariantCulture), ((DateTime)periodsInfo.ExitTime).Day.ToString(CultureInfo.InvariantCulture));
-                        strEntranceTime = "00:00:00";
-                    }
+                    if (periodsInfo.ExitTime == null && periodsInfo.EntranceTime != null &&
+                        periodsInfo.EnterTimeNextDay != null) strExitTime = "24:00:00";
+                    if (periodsInfo.ExitTime != null && periodsInfo.EntranceTime == null &&
+                        periodsInfo.ExitTimePrevDay != null) strEntranceTime = "00:00:00";
 
                     object absentTime = null;
                     object workTime = null;
 
                     if (totalAbsentTime.TotalSeconds > 0)
-                    {
-                        //absentTime = String.Format("<P align=\"center\">{0}:{1}:{2}</P>", totalAbsentTime.Hours + (totalAbsentTime.Days * 24), totalAbsentTime.Minutes.ToString("D2"), 
-                        //    totalAbsentTime.Seconds.ToString("D2"));
-                        absentTime = String.Format("{0}:{1}:{2}", totalAbsentTime.Hours + (totalAbsentTime.Days * 24), totalAbsentTime.Minutes.ToString("D2"), totalAbsentTime.Seconds.ToString("D2"));
-                    }
+                        absentTime = string.Format("{0}:{1}:{2}", totalAbsentTime.Hours + totalAbsentTime.Days * 24,
+                            totalAbsentTime.Minutes.ToString("D2"), totalAbsentTime.Seconds.ToString("D2"));
 
                     if (totalWorkTime.TotalSeconds > 0)
                     {
                         //workTime = String.Format("<P align=\"center\">{0}:{1}:{2}</P>", totalWorkTime.Hours + (totalWorkTime.Days * 24), totalWorkTime.Minutes.ToString("D2"), 
                         //    totalWorkTime.Seconds.ToString("D2"));
-                        workTime = String.Format("{0}:{1}:{2}", totalWorkTime.Hours + (totalWorkTime.Days * 24), totalWorkTime.Minutes.ToString("D2"), totalWorkTime.Seconds.ToString("D2"));
-                        if (periodsInfo.HasErrors)
-                        {
-                            //workTime = workTime.ToString().Replace("</P>", " *</P>");
-                            workTime = workTime + " *";
-                        }
+                        workTime = string.Format("{0}:{1}:{2}", totalWorkTime.Hours + totalWorkTime.Days * 24,
+                            totalWorkTime.Minutes.ToString("D2"), totalWorkTime.Seconds.ToString("D2"));
+                        if (periodsInfo.HasErrors) workTime = workTime + " *";
                     }
 
-                    int internetAccessInfoCount = internetAccessInfo.Count;
-                    string internetAccessCount = "";
+                    var internetAccessInfoCount = internetAccessInfo.Count;
+                    var internetAccessCount = "";
                     if (internetAccessInfoCount != 0)
                         internetAccessCount = internetAccessInfoCount.ToString(CultureInfo.InvariantCulture);
 
                     string internetAccessTotal;
-                    int internetAccessInfoTotal = internetAccessInfo.Total;
+                    var internetAccessInfoTotal = internetAccessInfo.Total;
                     if (internetAccessInfoTotal == 0)
                         internetAccessTotal = "";
                     else
-                        internetAccessTotal = (new TimeSpan(0, 0, internetAccessInfoTotal)).ToString();
+                        internetAccessTotal = new TimeSpan(0, 0, internetAccessInfoTotal).ToString();
 
-                    _sourceTable.Rows.Add(new object[] { linkCell, curInterval.StartTime, strEntranceTime, strExitTime, absentTime, workTime, totalAbsentTime, totalWorkTime, 
-                        periodsInfo.HasErrors ? "errorRow" : "singleRow", internetAccessCount, internetAccessTotal, isEnterAfterExit, isEnterAfterExit2 });
+                    _sourceTable.Rows.Add(linkCell, curInterval.StartTime, strEntranceTime, strExitTime, absentTime,
+                        workTime, totalAbsentTime, totalWorkTime, periodsInfo.HasErrors ? "errorRow" : "singleRow",
+                        internetAccessCount, internetAccessTotal, isEnterAfterExit, isEnterAfterExit2);
                     if (periodsInfo.HasErrors && !IsError) IsError = true;
                 }
 
@@ -333,27 +321,29 @@ namespace Kesco.App.Web.TimeControl.Common
         }
 
         /// <summary>
-        /// Сумма рабочего времени
+        ///     Сумма рабочего времени
         /// </summary>
         /// <returns>Сумма рабочего времени</returns>
         public TimeSpan GetSummaryWorkTime()
         {
             var result = new TimeSpan(0);
-            return _sourceTable.Rows.Cast<DataRow>().Where(row => row["INTERVAL_SORT"] != DBNull.Value).Aggregate(result, (current, row) => current + (TimeSpan) row["INTERVAL_SORT"]);
+            return _sourceTable.Rows.Cast<DataRow>().Where(row => row["INTERVAL_SORT"] != DBNull.Value)
+                .Aggregate(result, (current, row) => current + (TimeSpan) row["INTERVAL_SORT"]);
         }
 
         /// <summary>
-        /// Сумма перерывов
+        ///     Сумма перерывов
         /// </summary>
         /// <returns>Сумма перерывов</returns>
         public TimeSpan GetSummaryAbsentTime()
         {
             var result = new TimeSpan(0);
-            return _sourceTable.Rows.Cast<DataRow>().Where(row => row["ABSENT_TIME_SORT"] != DBNull.Value).Aggregate(result, (current, row) => current + (TimeSpan) row["ABSENT_TIME_SORT"]);
+            return _sourceTable.Rows.Cast<DataRow>().Where(row => row["ABSENT_TIME_SORT"] != DBNull.Value)
+                .Aggregate(result, (current, row) => current + (TimeSpan) row["ABSENT_TIME_SORT"]);
         }
 
         /// <summary>
-        /// Получение источника данных
+        ///     Получение источника данных
         /// </summary>
         /// <param name="needEmptyRecords">Признак отображения пустых строк (без проходов)</param>
         /// <returns>Источник данных</returns>
@@ -363,18 +353,15 @@ namespace Kesco.App.Web.TimeControl.Common
             var result = _sourceTable.Clone();
             result.Rows.Clear();
             foreach (DataRow row in _sourceTable.Rows)
-            {
-                if ((row["START_TIME"] != DBNull.Value && !row["START_TIME"].Equals("")) || (row["END_TIME"] != DBNull.Value && !row["END_TIME"].Equals("")))
-                {
+                if (row["START_TIME"] != DBNull.Value && !row["START_TIME"].Equals("") ||
+                    row["END_TIME"] != DBNull.Value && !row["END_TIME"].Equals(""))
                     result.ImportRow(row);
-                }
-            }
 
             return result;
         }
 
         /// <summary>
-        /// Получение имени сотрудника в зависимости от текущей культуры
+        ///     Получение имени сотрудника в зависимости от текущей культуры
         /// </summary>
         /// <param name="isRusLocal">Признак русской культуры</param>
         /// <returns>Имя сотрудника</returns>

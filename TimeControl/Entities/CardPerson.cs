@@ -3,74 +3,89 @@
 namespace Kesco.App.Web.TimeControl.Entities
 {
     /// <summary>
-    /// Бизнес-объект - сотрудник
+    ///     Бизнес-объект - сотрудник
     /// </summary>
     [Serializable]
     public class CardPerson
     {
         /// <summary>
-        /// КодСотрудника
+        ///     КодСотрудника
         /// </summary>
         public int CodeEmpl { get; set; }
+
         /// <summary>
-        /// КодЛица
+        ///     КодЛица
         /// </summary>
-        public int? CodePerson { get; set; }      
+        public int? CodePerson { get; set; }
+
         /// <summary>
-        /// ФамилияРус
+        ///     ФамилияРус
         /// </summary>
         public string SecondName { get; set; }
+
         /// <summary>
-        /// ИмяРус
+        ///     ИмяРус
         /// </summary>
         public string FirstName { get; set; }
+
         /// <summary>
-        /// ОтчествоРус
+        ///     ОтчествоРус
         /// </summary>
         public string Patronymic { get; set; }
+
         /// <summary>
-        /// Сотрудник
+        ///     Сотрудник
         /// </summary>
         public string FIO { get; set; }
+
         /// <summary>
-        /// Сотрудник
+        ///     Сотрудник
         /// </summary>
         public string FIOshort { get; set; }
+
         /// <summary>
-        /// Сотрудник
+        ///     Сотрудник
         /// </summary>
         public string FIOshortLat { get; set; }
+
         /// <summary>
-        /// Employee
+        ///     Employee
         /// </summary>
         public string Employee { get; set; }
+
         /// <summary>
-        /// ФамилияЛат
+        ///     ФамилияЛат
         /// </summary>
         public string SecondNameLat { get; set; }
+
         /// <summary>
-        /// ИмяЛат
+        ///     ИмяЛат
         /// </summary>
         public string FirstNameLat { get; set; }
+
         /// <summary>
-        /// ОтчествоЛат
+        ///     ОтчествоЛат
         /// </summary>
         public string PatronymicLat { get; set; }
+
         /// <summary>
-        /// Изменил
+        ///     Изменил
         /// </summary>
         public int ChangeBy { get; set; }
+
         /// <summary>
-        /// Изменено
+        ///     Изменено
         /// </summary>
         public DateTime ChangeDate { get; set; }
+
         /// <summary>
-        /// Признак физическое лицо
+        ///     Признак физическое лицо
         /// </summary>
         public bool IsIndividual { get; set; }
+
         /// <summary>
-        /// ФИОЛат
+        ///     ФИОЛат
         /// </summary>
-        public string FIOLat { get { return SecondNameLat + " " + FirstNameLat + " " + PatronymicLat; } }
+        public string FIOLat => SecondNameLat + " " + FirstNameLat + " " + PatronymicLat;
     }
 }

@@ -2,23 +2,24 @@
 using System.Data.SqlClient;
 using System.IO;
 using System.Resources;
+using System.Web.UI;
+using Kesco.Lib.Localization;
 using Kesco.Lib.Log;
-using Kesco.Lib.Web.Comet;
 
 namespace Kesco.App.Web.TimeControl.Forms
 {
     /// <summary>
-    /// Отображение ошибок
+    ///     Отображение ошибок
     /// </summary>
-    public partial class Error : System.Web.UI.Page
+    public partial class Error : Page
     {
         /// <summary>
-        /// Локализация
+        ///     Локализация
         /// </summary>
-        public ResourceManager Resx = Lib.Localization.Resources.Resx;
+        public ResourceManager Resx = Resources.Resx;
 
         /// <summary>
-        /// Рендеринг ошибки
+        ///     Рендеринг ошибки
         /// </summary>
         /// <param name="w"></param>
         protected virtual void RenderError(TextWriter w)
@@ -32,9 +33,10 @@ namespace Kesco.App.Web.TimeControl.Forms
                 }
                 else if (Application["Error"] is SqlException || Application["Error"] is LogicalException)
                 {
-                    var ex = (SqlException)Application["Error"];
+                    var ex = (SqlException) Application["Error"];
                     w.Write(ex.Message + "<br /><br /><br />" + ex.StackTrace.Replace("\r\n", "<br />"));
                 }
+
                 Application["Error"] = null;
             }
         }

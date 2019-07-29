@@ -3,18 +3,15 @@ function SetInit(paramAddFunc) {
         SetTableDivSize();
         if (window.innerWidth == undefined) {
             window.onresize = SetTableDivSize;
+        } else {
+            window.onresize = function() { SetTableDivSize(); };
         }
-        else {
-            window.onresize = function () { SetTableDivSize(); };
-        }
-    }
-    else if (paramAddFunc == 1) {
+    } else if (paramAddFunc == 1) {
         SetTableDetailsSize();
         if (window.innerWidth == undefined) {
             window.onresize = SetTableDetailsSize;
-        }
-        else {
-            window.onresize = function () { SetTableDetailsSize(); };
+        } else {
+            window.onresize = function() { SetTableDetailsSize(); };
         }
     }
 }
@@ -33,7 +30,7 @@ function SetTableDivSize() {
     if (document.all("btnPrint")) btnPrint = document.all("btnPrint");
 
     if (tableDiv == null || mtable == null || descDiv == null || mrow_1 == null || mrow_2 == null) return;
-    tableDiv.style.display = 'block';
+    tableDiv.style.display = "block";
     tableDiv.style.top = mrow_1.clientHeight + mrow_2.clientHeight + 6 + "px";
 
     if (intervalList != null) {
@@ -44,26 +41,24 @@ function SetTableDivSize() {
             if (heightGrid < 300) {
                 tableDiv.style.height = 300 + "px";
             } else {
-            if (heightGrid < intervalList.clientHeight) {
-                tableDiv.style.height = heightGrid + "px";
-            } else {
-                tableDiv.style.height = intervalList.clientHeight + "px";
-            }
+                if (heightGrid < intervalList.clientHeight) {
+                    tableDiv.style.height = heightGrid + "px";
+                } else {
+                    tableDiv.style.height = intervalList.clientHeight + "px";
+                }
                 //tableDiv.style.height = intervalList.clientHeight + "px";
             }
             //mHeight = tableDiv.clientHeight;
-        }
-        else {
+        } else {
             tableDiv.style.height = intervalList.clientHeight + "px";
             //mHeight = intervalList.clientHeight;
         }
         //descDiv.style.top = mHeight + heightFilter + "px";
         //descDiv.style.width = tableDiv.style.width;
-    }
-    else {
-        descDiv.style.display = 'none';
+    } else {
+        descDiv.style.display = "none";
         if (btnPrint != null)
-            btnPrint.style.display = 'none';
+            btnPrint.style.display = "none";
     }
 }
 
@@ -90,18 +85,16 @@ function SetTableDetailsSize() {
                 //tableDiv.style.height = intervalList.clientHeight + "px";
             }
             //mHeight = tableDiv.clientHeight;
-        }
-        else {
+        } else {
             tableDiv.style.height = intervalList.clientHeight + "px";
             //mHeight = intervalList.clientHeight;
         }
         //descDiv.style.top = mHeight + mtable.clientHeight + "px";
         //descDiv.style.width = tableDiv.style.width;
-    }
-    else {
-        descDiv.style.display = 'none';
+    } else {
+        descDiv.style.display = "none";
         if (btnPrint != null)
-            btnPrint.style.display = 'none';
+            btnPrint.style.display = "none";
     }
 }
 
@@ -121,33 +114,33 @@ function displayTimeExit(disp, inx) {
 
 function UTC2Local() {
     for (i = 0; i < document.all.length; i++) {
-        if (document.all(i).id.indexOf('utctime') != -1) {
-            var temp = v4_toLocalTime(document.all(i).innerHTML, 'hh:mi:ss', '', true);
-            if (document.all(i).id.indexOf('utctimeForce') != -1) {
-                if (temp == '00:00:00') {
-                    temp = '24:00:00';
+        if (document.all(i).id.indexOf("utctime") != -1) {
+            var temp = v4_toLocalTime(document.all(i).innerHTML, "hh:mi:ss", "", true);
+            if (document.all(i).id.indexOf("utctimeForce") != -1) {
+                if (temp == "00:00:00") {
+                    temp = "24:00:00";
                 }
             }
             document.all(i).innerHTML = temp;
         }
-        if (document.all(i).innerHTML == 'Incorrect date format')
-            document.all(i).innerHTML = '';
+        if (document.all(i).innerHTML == "Incorrect date format")
+            document.all(i).innerHTML = "";
     }
 }
 
 function UTC2LocalTimeDetails() {
     for (i = 0; i < document.all.length; i++) {
-        if (document.all(i).id.indexOf('utctime') != -1) {
-            var temp = v4_toLocalTime(document.all(i).innerHTML, 'hh:mi:ss', '', true);
-            if (document.all(i).id.indexOf('utctimeForce') != -1) {
-                if (temp == '00:00:00') {
-                    temp = '24:00:00';
+        if (document.all(i).id.indexOf("utctime") != -1) {
+            var temp = v4_toLocalTime(document.all(i).innerHTML, "hh:mi:ss", "", true);
+            if (document.all(i).id.indexOf("utctimeForce") != -1) {
+                if (temp == "00:00:00") {
+                    temp = "24:00:00";
                 }
             }
             document.all(i).innerHTML = temp;
         }
-        if (document.all(i).innerHTML == 'Incorrect date format')
-            document.all(i).innerHTML = '';
+        if (document.all(i).innerHTML == "Incorrect date format")
+            document.all(i).innerHTML = "";
     }
 }
 
@@ -160,17 +153,24 @@ function mouseOver(id, userPhoto) {
         else
             Y = document.body.scrollTop + window.event.clientY - 165;
         X = window.event.clientX - 20;
-    }
-    else {
+    } else {
         X = 120;
         Y = document.body.scrollTop + 20;
     }
-    document.all('lookup').innerHTML = "<div class= \"bgMain\" style =\"WIDTH: 100px; BACKGROUND-COLOR: #ffffff; FILTER: alpha(opacity=100); FONT-WEIGHT: bold; TEXT-DECORATION: none; COLOR: black; POSITION: absolute; Z-INDEX: 1000; TOP = " + Y + "px;  LEFT = " + X + "px \"><img style = \"FLOAT: left;\" align=left width='120px' src='" + userPhoto + "?id=" + id + "&w=120'><span style =\"FLOAT: left; TEXT-DECORATION: none\"></span></div>";
+    document.all("lookup").innerHTML =
+        "<div class= \"bgMain\" style =\"WIDTH: 100px; BACKGROUND-COLOR: #ffffff; FILTER: alpha(opacity=100); FONT-WEIGHT: bold; TEXT-DECORATION: none; COLOR: black; POSITION: absolute; Z-INDEX: 1000; TOP = " +
+        Y +
+        "px;  LEFT = " +
+        X +
+        "px \"><img style = \"FLOAT: left;\" align=left width='120px' src='" +
+        userPhoto +
+        "?id=" +
+        id +
+        "&w=120'><span style =\"FLOAT: left; TEXT-DECORATION: none\"></span></div>";
 }
 
 function ShowWaitLayer(cmd) {
-    Wait.render(true);
-    cmdasync('cmd', cmd);
+    cmdasync("cmd", cmd);
 }
 
 function HideWaitLayer() {
@@ -178,17 +178,23 @@ function HideWaitLayer() {
 }
 
 function mouseOut() {
-    document.all('lookup').innerHTML = "";
+    document.all("lookup").innerHTML = "";
 }
 
 function ShowFotoToolTip(setCheck, userPhoto, id, path) {
     if (setCheck)
-        gi('cbShowFoto_' + id).checked = !gi('cbShowFoto_' + id).checked;
-    if (gi('cbShowFoto_' + id).checked) {
-        gi('dFoto_' + id).innerHTML = "<img width=\"120px\" onclick=\"ShowFotoToolTip(true, '', " + id + ");\" src=\"" + userPhoto + "?id=" + id + "&w=120\" \>";
+        gi("cbShowFoto_" + id).checked = !gi("cbShowFoto_" + id).checked;
+    if (gi("cbShowFoto_" + id).checked) {
+        gi("dFoto_" + id).innerHTML = "<img width=\"120px\" onclick=\"ShowFotoToolTip(true, '', " +
+            id +
+            ");\" src=\"" +
+            userPhoto +
+            "?id=" +
+            id +
+            "&w=120\" \>";
         SetCookieTc(path, true);
     } else {
-        gi('dFoto_' + id).innerHTML = "";
+        gi("dFoto_" + id).innerHTML = "";
         SetCookieTc(path, false);
     }
 }
@@ -205,13 +211,18 @@ function SetCookieTc(path, id) {
 }
 
 function HideCalcType() {
-    calc_type.innerHTML = '';
+    calc_type.innerHTML = "";
 }
 
 function ItemClick(id, path) {
     var l = screen.availHeight / 2 - 200;
     var r = screen.availWidth / 2 - 300;
-    v4_windowOpen(path + "?id=" + id, "_blank", "scrollbars = yes,height=400,width=600,resizable = yes,toolbar=no,menubar=no,location=no,left=" + l + ",top=" + r);
+    v4_windowOpen(path + "?id=" + id,
+        "_blank",
+        "scrollbars = yes,height=400,width=600,resizable = yes,toolbar=no,menubar=no,location=no,left=" +
+        l +
+        ",top=" +
+        r);
 }
 
 function sendMessage(eMail) {

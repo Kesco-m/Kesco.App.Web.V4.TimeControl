@@ -1,35 +1,35 @@
 ﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
-    <head>
-        <title>Справка</title>
-        <meta content="text/html; charset=utf-8" />
-        <script type="text/javascript" src="script.js"></script>
-        <script type="text/javascript">
-            var old = window.onload;
-            if (typeof window.onload != 'function') window.onload = func;
-            else
-                window.onload = function () {
-                    func();
-                };
-                function func() {
-                    var url = window.location.href;
-                    var arr = url.split('?id=');
-                    if (arr.length == 2) {
-                        if(arr[1] == 1) {
-                            OpenPageInHelp('hlpDetails');
-                        }
-                        else if (arr[1] == 2) {
-                            OpenPageInHelp('hlpDetailsTime');
-                        }
-                    }
+<head>
+    <title>Справка</title>
+    <meta content="text/html; charset=utf-8"/>
+    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript">
+        var old = window.onload;
+        if (typeof window.onload != 'function') window.onload = func;
+        else
+            window.onload = function() {
+                func();
+            };
+
+        function func() {
+            var url = window.location.href;
+            var arr = url.split('?id=');
+            if (arr.length == 2) {
+                if (arr[1] == 1) {
+                    OpenPageInHelp('hlpDetails');
+                } else if (arr[1] == 2) {
+                    OpenPageInHelp('hlpDetailsTime');
                 }
-        </script>
-    </head>
-    <frameset cols="250,*" frameborder="1" framespacing="1">
-        <frame name="index" id="index" scrolling="auto" src="index.htm">
-        <frame name="content" id="content" scrolling="auto" src="default.htm">
-        <noframes>
-            <p>Ошибка отображения фреймов.</p>		
-        </noframes>
-    </frameset>
+            }
+        }
+    </script>
+</head>
+<frameset cols="250,*" frameborder="1" framespacing="1">
+    <frame name="index" id="index" scrolling="auto" src="index.htm">
+    <frame name="content" id="content" scrolling="auto" src="default.htm">
+    <noframes>
+        <p>Ошибка отображения фреймов.</p>
+    </noframes>
+</frameset>
 </html>
