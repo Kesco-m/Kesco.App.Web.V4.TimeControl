@@ -25,3 +25,6 @@
 [submodule "Kesco.Lib.Web.DBSelect.V4"]
 	path = Kesco.Lib.Web.DBSelect.V4
 	url = https://github.com/Kesco-m/Kesco.Lib.Web.DBSelect.V4.git
+[submodule "Kesco.Lib.Web.SignalR"]
+	path = Kesco.Lib.Web.SignalR
+	url = https://github.com/Kesco-m/Kesco.Lib.Web.SignalR.git
