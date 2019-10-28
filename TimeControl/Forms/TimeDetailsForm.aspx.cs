@@ -7,6 +7,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Kesco.App.Web.TimeControl.Common;
 using Kesco.App.Web.TimeControl.Entities;
+using Kesco.Lib.Log;
 using Kesco.Lib.Web.Settings;
 
 namespace Kesco.App.Web.TimeControl.Forms
@@ -119,8 +120,6 @@ namespace Kesco.App.Web.TimeControl.Forms
             Refresh();
             HelpUrl = Request.Url.Scheme + "://" + Request.Url.Host + Request.ApplicationPath +
                       "/Forms/hlp/help.htm?id=2";
-            btnHlp.Attributes.Add("onclick", string.Format("v4_windowOpen('{0}');", HelpUrl));
-            btnHlp.Attributes.Add("title", Resx.GetString("cmdHelp"));
         }
 
         private void Refresh()
@@ -207,7 +206,7 @@ namespace Kesco.App.Web.TimeControl.Forms
 
             if (tPeriodsList.Rows.Count == 0)
             {
-                JS.Write("document.all('listTableWork').innerHTML = '<P align=center>{0}</P>';",
+                JS.Write("document.getElementById('listTableWork').innerHTML = '<P align=center>{0}</P>';",
                     Resx.GetString("lNoData"));
             }
             else
@@ -238,7 +237,7 @@ namespace Kesco.App.Web.TimeControl.Forms
                     tableContent = tableContent.Replace("</table>", newTableEnd);
                 }
 
-                JS.Write("document.all('listTableWork').innerHTML = '{0}';", tableContent);
+                JS.Write("document.getElementById('listTableWork').innerHTML = '{0}';", tableContent);
             }
         }
 
@@ -281,7 +280,7 @@ namespace Kesco.App.Web.TimeControl.Forms
 
             if (tPeriodsListAbs.Rows.Count == 0)
             {
-                JS.Write("document.all('listTableAbs').innerHTML = '<P align=center>{0}</P>';",
+                JS.Write("document.getElementById('listTableAbs').innerHTML = '<P align=center>{0}</P>';",
                     Resx.GetString("lNoData"));
             }
             else
@@ -312,7 +311,7 @@ namespace Kesco.App.Web.TimeControl.Forms
                     tableContent = tableContent.Replace("</table>", newTableEnd);
                 }
 
-                JS.Write("document.all('listTableAbs').innerHTML = '{0}';", tableContent);
+                JS.Write("document.getElementById('listTableAbs').innerHTML = '{0}';", tableContent);
             }
         }
 
@@ -436,5 +435,32 @@ namespace Kesco.App.Web.TimeControl.Forms
         private CardPerson _cp;
 
         #endregion
+
+
+        /// <summary>
+        ///     Подготовка данных для отрисовки заголовка страницы(панели с кнопками)
+        /// </summary>
+        /// <returns></returns>
+        protected string RenderDocumentHeader()
+        {
+            using (var w = new StringWriter())
+            {
+                try
+                {
+                    ClearMenuButtons();
+                    RenderButtons(w);
+                }
+                catch (Exception e)
+                {
+                    var dex = new DetailedException("Не удалось сформировать кнопки формы: " + e.Message, e);
+                    Logger.WriteEx(dex);
+                    throw dex;
+                }
+
+                return w.ToString();
+            }
+        }
     }
+
+
 }

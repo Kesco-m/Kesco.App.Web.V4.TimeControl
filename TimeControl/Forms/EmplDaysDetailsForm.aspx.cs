@@ -9,8 +9,10 @@ using System.Web.UI.WebControls;
 using Kesco.App.Web.TimeControl.Common;
 using Kesco.App.Web.TimeControl.Entities;
 using Kesco.Lib.BaseExtention.Enums.Controls;
+using Kesco.Lib.Log;
 using Kesco.Lib.Web.Controls.V4;
 using Kesco.Lib.Web.Settings;
+using Kesco.Lib.Web.SignalR;
 
 namespace Kesco.App.Web.TimeControl.Forms
 {
@@ -83,9 +85,10 @@ namespace Kesco.App.Web.TimeControl.Forms
                 case "openDetails":
                     RedirectToDetails(param["id"], param["from"]);
                     break;
+                default:
+                    base.ProcessCommand(cmd, param);
+                    break;
             }
-
-            base.ProcessCommand(cmd, param);
         }
 
         private void RefreshList()
@@ -104,13 +107,13 @@ namespace Kesco.App.Web.TimeControl.Forms
                 var tableContent = stringWriter.ToString().Replace("</table>", _totalTag).Replace("\n", "")
                     .Replace("\r", "").Replace("\t", "").Replace("'", "\\'");
 
-                JS.Write("document.all('listTable').innerHTML = '{0}';", tableContent);
+                JS.Write("document.getElementById('listTable').innerHTML = '{0}';", tableContent);
                 pagerBar.SetDisabled(false);
                 pagerBar.RowsPerPage = RowsPerPageSetting;
             }
             else
             {
-                JS.Write("document.all('listTable').innerHTML = '<P align=\\'center\\'><BR>{0}</P>';",
+                JS.Write("document.getElementById('listTable').innerHTML = '<P align=\\'center\\'><BR>{0}</P>';",
                     Resx.GetString("lNoData"));
                 pagerBar.SetDisabled(true, false);
             }
@@ -123,7 +126,7 @@ namespace Kesco.App.Web.TimeControl.Forms
             JS.Write(SourceCash.IsError ? "di('descDiv');" : "hi('descDiv');");
             SetEmployeeInfo();
             UpdateTotalCount();
-            Period.DisableListing(false);
+           // Period.DisableListing(false);
         }
 
         protected void Print()
@@ -131,7 +134,7 @@ namespace Kesco.App.Web.TimeControl.Forms
             var idpage = Request.QueryString["idpage"];
             if (!string.IsNullOrEmpty(idpage))
             {
-                var p = Application[idpage] as Page;
+                var p = KescoHub.GetPage(idpage);
                 if (p != null)
                 {
                     var dt = ((EmplDaysDetailsForm) p).SourceCash.GetSourceTable(!((EmplDaysDetailsForm) p)
@@ -401,8 +404,7 @@ namespace Kesco.App.Web.TimeControl.Forms
             if (e.IsChange && e.OldValue == "cmd" && (e.NewValue == "prev" || e.NewValue == "next"))
             {
                 pagerBar.CurrentPageNumber = CurrentPageSetting = 1;
-                Period.DisableListing(true);
-                JS.Write("ShowWaitLayer('Refresh');");
+                RefreshList();
                 return;
             }
 
@@ -445,8 +447,6 @@ namespace Kesco.App.Web.TimeControl.Forms
                 ep2.Checked = true;
             HelpUrl = Request.Url.Scheme + "://" + Request.Url.Host + Request.ApplicationPath +
                       "/Forms/hlp/help.htm?id=1";
-            btnHlp.Attributes.Add("onclick", string.Format("v4_windowOpen('{0}');", HelpUrl));
-            btnHlp.Attributes.Add("title", Resx.GetString("cmdHelp"));
         }
 
         private void GetParams()
@@ -586,8 +586,8 @@ namespace Kesco.App.Web.TimeControl.Forms
         {
             SourceCash.ClearCash();
             pagerBar.SetDisabled(true, false);
-            //JS.Write("if (document.all('intervalList')) document.all('intervalList').rows(0).className = 'GridHeaderGrayed';");
-            JS.Write("if (document.all('intervalList')) document.all('intervalList').className = 'Grid8Grayed';");
+            JS.Write("$('#btnPrint').hide();");
+            JS.Write("if (document.getElementById('intervalList')) document.getElementById('intervalList').className = 'Grid8Grayed';");
         }
 
         private void ShowLookup(string emplId)
@@ -796,5 +796,29 @@ namespace Kesco.App.Web.TimeControl.Forms
         }
 
         #endregion
+
+        /// <summary>
+        ///     Подготовка данных для отрисовки заголовка страницы(панели с кнопками)
+        /// </summary>
+        /// <returns></returns>
+        protected string RenderDocumentHeader()
+        {
+            using (var w = new StringWriter())
+            {
+                try
+                {
+                    ClearMenuButtons();
+                    RenderButtons(w);
+                }
+                catch (Exception e)
+                {
+                    var dex = new DetailedException("Не удалось сформировать кнопки формы: " + e.Message, e);
+                    Logger.WriteEx(dex);
+                    throw dex;
+                }
+
+                return w.ToString();
+            }
+        }
     }
 }

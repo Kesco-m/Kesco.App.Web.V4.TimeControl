@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 </head>
 <body>
+<%= RenderDocumentHeader() %>
 <script type="text/javascript">
     isAddFunc = true;
     paramAddFunc = 1;
@@ -18,9 +19,7 @@
             <h2><%= Resx.GetString("hPageTitle") %></h2>
             <h2><%= Resx.GetString("hPageDetailsTitle") %></h2>
         </td>
-        <td align="right" valign="top">
-            <input runat="server" ID="btnHlp" type="button" style="BACKGROUND: url(/styles/Help.gif) no-repeat center center; height: 20px; width: 20px;"/>
-        </td>
+        <td></td>
     </tr>
     <tr>
         <td style="WIDTH: 100%" colspan="2">

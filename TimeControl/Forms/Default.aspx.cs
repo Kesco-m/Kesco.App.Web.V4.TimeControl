@@ -12,8 +12,10 @@ using Kesco.Lib.BaseExtention.Enums.Controls;
 using Kesco.Lib.BaseExtention.Enums.Corporate;
 using Kesco.Lib.Entities.Corporate;
 using Kesco.Lib.Entities.Persons;
+using Kesco.Lib.Log;
 using Kesco.Lib.Web.Controls.V4;
 using Kesco.Lib.Web.Settings;
+using Kesco.Lib.Web.SignalR;
 using Item = Kesco.Lib.Entities.Item;
 using Page = Kesco.Lib.Web.Controls.V4.Common.Page;
 
@@ -52,6 +54,19 @@ namespace Kesco.App.Web.TimeControl.Forms
         {
             switch (cmd)
             {
+                case "SetTimeZoneOffSet":
+                    if (string.IsNullOrEmpty(Tz))
+                    {
+                        var tz = "";
+                        var arr = param["tz"].Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                        if (arr.Length > 0)
+                            tz = arr[0];
+                        Tz = tz;
+                        var back = param["isback"];
+                        if (back == "1") RefreshListInternal();
+                    }
+
+                    break;
                 case "ShowPersonById":
                     var url = Config.user_form + "?id=" + param["id"];
                     JS.Write("v3s_openForm('{0}','Поиск лиц');", url);
@@ -228,8 +243,7 @@ namespace Kesco.App.Web.TimeControl.Forms
             if (e.IsChange && e.OldValue == "cmd" && (e.NewValue == "prev" || e.NewValue == "next"))
             {
                 pagerBar.CurrentPageNumber = CurrentPageSetting = 1;
-                Period.DisableListing(true);
-                JS.Write("ShowWaitLayer('Refresh');");
+                RefreshListInternal();
                 return;
             }
 
@@ -541,8 +555,7 @@ namespace Kesco.App.Web.TimeControl.Forms
             //pagerBar.MaxPageNumber = 1;
             HelpUrl = Request.Url.Scheme + "://" + Request.Url.Host + Request.ApplicationPath +
                       "/Forms/hlp/help.htm?id=0";
-            btnHlp.Attributes.Add("onclick", string.Format("v4_windowOpen('{0}');", HelpUrl));
-            btnHlp.Attributes.Add("title", Resx.GetString("cmdHelp"));
+         
         }
 
         private void SetHandlers()
@@ -592,12 +605,12 @@ namespace Kesco.App.Web.TimeControl.Forms
                     intervalList.RenderControl(writer);
                     var tableContent = stringWriter.ToString().Replace("\n", "").Replace("\r", "").Replace("\t", "")
                         .Replace("'", "\\'");
-                    JS.Write("document.all('listTable').innerHTML = '{0}';", tableContent);
+                    JS.Write("document.getElementById('listTable').innerHTML = '{0}';", tableContent);
                     pagerBar.SetDisabled(false);
                 }
                 else
                 {
-                    JS.Write("document.all('listTable').innerHTML = '<P align=\\'center\\'><BR>{0}</P>';",
+                    JS.Write("document.getElementById('listTable').innerHTML = '<P align=\\'center\\'><BR>{0}</P>';",
                         Resx.GetString("lNoData"));
                     pagerBar.SetDisabled(true, false);
                 }
@@ -608,7 +621,7 @@ namespace Kesco.App.Web.TimeControl.Forms
                 if (!JS.ToString().Contains("v4_setToolTip()"))
                     JS.Write("v4_setToolTip();");
                 JS.Write(SourceCash.IsError ? "di('descDiv');" : "hi('descDiv');");
-                Period.DisableListing(false);
+                //Period.DisableListing(false);
             }
         }
 
@@ -617,7 +630,7 @@ namespace Kesco.App.Web.TimeControl.Forms
             var idpage = Request.QueryString["idpage"];
             if (!string.IsNullOrEmpty(idpage))
             {
-                var p = Application[idpage] as Page;
+                var p = KescoHub.GetPage(idpage);
                 if (p != null)
                 {
                     var ds = ((Default) p).SourceCash.GetDS();
@@ -636,9 +649,9 @@ namespace Kesco.App.Web.TimeControl.Forms
                             ((Default) p).Period.ValuePeriod ==
                             ((int) PeriodsEnum.Custom).ToString(CultureInfo.InvariantCulture) &&
                             ((Default) p).Period.ValueDateFrom == ((Default) p).Period.ValueDateTo)
-                            FillPrintDataByDay(dt, p);
+                            FillPrintDataByDay(dt, (Default)p);
                         else
-                            FillPrintData(dt, p);
+                            FillPrintData(dt, (Default)p);
                     }
                 }
             }
@@ -914,7 +927,6 @@ namespace Kesco.App.Web.TimeControl.Forms
             FilterSubEmpl.Checked = Filter.IsSubEmployee;
             EmplName.Filter.EmployeeAvaible.ValueEmployeeAvaible = !Filter.EmplAvaible;
             SetTimeControl(Filter.TimeExitAvaible ? "1" : "");
-            if (Request.QueryString["isback"] == "1") RefreshListInternal();
             var param = "";
             if (Filter.PairCallerPosition != null || Filter.PairCallerSize != null)
                 param += string.Format("['|Phone',{0},{1},{2},{3}],",
@@ -939,11 +951,11 @@ namespace Kesco.App.Web.TimeControl.Forms
         {
             SourceCash.ClearCash();
             pagerBar.SetDisabled(true, false);
-            //JS.Write("if (document.all('intervalList')) document.all('intervalList').rows(0).className = 'GridHeaderGrayed';");
+            JS.Write("$('#btnPrint').hide();");
             if (JS.ToString()
-                .Contains("if (document.all('intervalList')) document.all('intervalList').className = 'Grid8Grayed';"))
+                .Contains("if (document.getElementById('intervalList')) document.getElementById('intervalList').className = 'Grid8Grayed';"))
                 return;
-            JS.Write("if (document.all('intervalList')) document.all('intervalList').className = 'Grid8Grayed';");
+            JS.Write("if (document.getElementById('intervalList')) document.getElementById('intervalList').className = 'Grid8Grayed';");
         }
 
         private void CheckSubdivision()
@@ -1158,5 +1170,29 @@ namespace Kesco.App.Web.TimeControl.Forms
         private bool NeedToDisplayAdditionCols => DetailsByDay;
 
         #endregion
+
+        /// <summary>
+        ///     Подготовка данных для отрисовки заголовка страницы(панели с кнопками)
+        /// </summary>
+        /// <returns></returns>
+        protected string RenderDocumentHeader()
+        {
+            using (var w = new StringWriter())
+            {
+                try
+                {
+                    ClearMenuButtons();
+                    RenderButtons(w);
+                }
+                catch (Exception e)
+                {
+                    var dex = new DetailedException("Не удалось сформировать кнопки формы: " + e.Message, e);
+                    Logger.WriteEx(dex);
+                    throw dex;
+                }
+
+                return w.ToString();
+            }
+        }
     }
 }

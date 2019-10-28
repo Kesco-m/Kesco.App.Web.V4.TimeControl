@@ -11,19 +11,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 </head>
 <body>
+<%= RenderDocumentHeader() %>
 <script type="text/javascript">
     isAddFunc = true;
     paramAddFunc = 0;
-    cmdasync('cmd', 'SetTimeZoneOffSet', 'tz', new Date().getTimezoneOffset());
+
+    $(document).ready(function () {
+        var isback = v4_getQSParamValue("isback");
+        cmdasync('cmd', 'SetTimeZoneOffSet', 'tz', new Date().getTimezoneOffset(),"isback", isback==null?0:1);
+    });
+
 </script>
 <table id="mtable" cellspacing="0" style="margin: auto" width="1035px" border="0">
     <tr id="mrow_1" height="10">
         <td align="left">
             <h2><%= Resx.GetString("hPageTitle") %></h2>
         </td>
-        <td align="right" valign="top" style="width: 20px">
-            <input runat="server" ID="btnHlp" type="button" tabindex="11" style="BACKGROUND: url(/styles/Help.gif) no-repeat center center; height: 20px; width: 20px;"/>
-        </td>
+        <td></td>
     </tr>
     <tr id="mrow_2">
         <td style="WIDTH: 100%" colspan="2">

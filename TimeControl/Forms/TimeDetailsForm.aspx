@@ -7,15 +7,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 </head>
 <body>
+<%= RenderDocumentHeader() %>
 <span id="wait_screen"></span>
-<table style="BORDER-RIGHT-STYLE: none; LEFT: 0px; POSITION: absolute; TOP: 0px;" width="100%" border="0">
+<table width="100%" border="0">
     <tr height="10">
         <td align="left">
             <h2><%= Resx.GetString("hPageTitle") %></h2>
             <h2><%= Resx.GetString("hPageSubTitleDetails2") %></h2>
         </td>
         <td align="right" valign="top">
-            <input runat="server" ID="btnHlp" type="button" style="BACKGROUND: url(/styles/Help.gif) no-repeat center center; height: 20px; width: 20px;"/>
         </td>
     </tr>
     <tr>

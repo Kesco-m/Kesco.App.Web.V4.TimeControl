@@ -13,15 +13,6 @@ namespace Kesco.App.Web.TimeControl.Forms {
     public partial class Default {
         
         /// <summary>
-        /// btnHlp элемент управления.
-        /// </summary>
-        /// <remarks>
-        /// Автоматически создаваемое поле.
-        /// Для изменения переместите объявление поля из файла конструктора в файл кода программной части.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputButton btnHlp;
-        
-        /// <summary>
         /// Company элемент управления.
         /// </summary>
         /// <remarks>

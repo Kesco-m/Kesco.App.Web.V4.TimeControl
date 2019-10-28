@@ -85,31 +85,7 @@ namespace Kesco.App.Web.TimeControl.Common
             base.OnLoad(e);
         }
 
-        /// <summary>
-        ///     Обработка клиентских команд
-        /// </summary>
-        /// <param name="cmd"></param>
-        /// <param name="param"></param>
-        protected override void ProcessCommand(string cmd, NameValueCollection param)
-        {
-            switch (cmd)
-            {
-                case "SetTimeZoneOffSet":
-                    if (string.IsNullOrEmpty(Tz))
-                    {
-                        var tz = "";
-                        var arr = param["tz"].Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
-                        if (arr.Length > 0)
-                            tz = arr[0];
-                        Tz = tz;
-                    }
-
-                    break;
-            }
-
-            base.ProcessCommand(cmd, param);
-        }
-
+        
         /// <summary>
         ///     Парсинг строки в формат DateTime
         /// </summary>

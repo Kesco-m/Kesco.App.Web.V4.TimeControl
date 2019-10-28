@@ -21,13 +21,13 @@ function SetTableDivSize() {
     vHeight = $(window).height() - 45;
     var tableDiv, mtable, descDiv, intervalList, mrow_1, mrow_2, btnPrint;
 
-    if (document.all("tableDiv")) tableDiv = document.all("tableDiv");
-    if (document.all("mtable")) mtable = document.all("mtable");
-    if (document.all("descDiv")) descDiv = document.all("descDiv");
-    if (document.all("intervalList")) intervalList = document.all("intervalList");
-    if (document.all("mrow_1")) mrow_1 = document.all("mrow_1");
-    if (document.all("mrow_2")) mrow_2 = document.all("mrow_2");
-    if (document.all("btnPrint")) btnPrint = document.all("btnPrint");
+    if (document.getElementById("tableDiv")) tableDiv = document.getElementById("tableDiv");
+    if (document.getElementById("mtable")) mtable = document.getElementById("mtable");
+    if (document.getElementById("descDiv")) descDiv = document.getElementById("descDiv");
+    if (document.getElementById("intervalList")) intervalList = document.getElementById("intervalList");
+    if (document.getElementById("mrow_1")) mrow_1 = document.getElementById("mrow_1");
+    if (document.getElementById("mrow_2")) mrow_2 = document.getElementById("mrow_2");
+    if (document.getElementById("btnPrint")) btnPrint = document.getElementById("btnPrint");
 
     if (tableDiv == null || mtable == null || descDiv == null || mrow_1 == null || mrow_2 == null) return;
     tableDiv.style.display = "block";
@@ -67,11 +67,11 @@ function SetTableDetailsSize() {
     vHeight = $(window).height() - 220;
     var tableDiv, mtable, descDiv, intervalList, btnPrint;
 
-    if (document.all("tableDiv")) tableDiv = document.all("tableDiv");
-    if (document.all("mtable")) mtable = document.all("mtable");
-    if (document.all("descDiv")) descDiv = document.all("descDiv");
-    if (document.all("intervalList")) intervalList = document.all("intervalList");
-    if (document.all("btnPrint")) btnPrint = document.all("btnPrint");
+    if (document.getElementById("tableDiv")) tableDiv = document.getElementById("tableDiv");
+    if (document.getElementById("mtable")) mtable = document.getElementById("mtable");
+    if (document.getElementById("descDiv")) descDiv = document.getElementById("descDiv");
+    if (document.getElementById("intervalList")) intervalList = document.getElementById("intervalList");
+    if (document.getElementById("btnPrint")) btnPrint = document.getElementById("btnPrint");
 
     if (tableDiv == null || mtable == null || descDiv == null) return;
 
@@ -130,6 +130,7 @@ function UTC2Local() {
 
 function UTC2LocalTimeDetails() {
     for (i = 0; i < document.all.length; i++) {
+        
         if (document.all(i).id.indexOf("utctime") != -1) {
             var temp = v4_toLocalTime(document.all(i).innerHTML, "hh:mi:ss", "", true);
             if (document.all(i).id.indexOf("utctimeForce") != -1) {
@@ -157,7 +158,7 @@ function mouseOver(id, userPhoto) {
         X = 120;
         Y = document.body.scrollTop + 20;
     }
-    document.all("lookup").innerHTML =
+    document.getElementById("lookup").innerHTML =
         "<div class= \"bgMain\" style =\"WIDTH: 100px; BACKGROUND-COLOR: #ffffff; FILTER: alpha(opacity=100); FONT-WEIGHT: bold; TEXT-DECORATION: none; COLOR: black; POSITION: absolute; Z-INDEX: 1000; TOP = " +
         Y +
         "px;  LEFT = " +
@@ -178,7 +179,7 @@ function HideWaitLayer() {
 }
 
 function mouseOut() {
-    document.all("lookup").innerHTML = "";
+    document.getElementById("lookup").innerHTML = "";
 }
 
 function ShowFotoToolTip(setCheck, userPhoto, id, path) {
